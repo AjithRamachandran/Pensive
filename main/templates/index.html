@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+    {% block content %}
+    <div style="padding-right: 90px;">
+    <div class="row">
+      <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="{% url 'main:index' %}" {% if tab != 1 %} class="active" {% endif %}><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="{% url 'main:tags_tab' 1 %}" {% if tab == 1 %} class="active" {% endif %}><i class="fa fa-tags"></i> Tags</a></li>
+        </ul>
+      </div>
+    <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12" style="border-left:1px solid #ccc">
+          <div class="row"  style="border-bottom: 1px solid #ccc; padding-bottom: 20px;">
+              <div class="col-md-4 text-left">
+                  <div class="previous">
+                      <h2 style="padding-left: 25px;">{% if tab == 0 %} All Questions {% else %} Tags {% endif %} </h2>
+                  </div>
+              </div>
+              <div class="col-md-6" >
+                <div class="pull-right" style="padding-top: 25px;">
+                  <a class="btn btn-default pull-right"
+                  {% if tags == None or tags.count != 0 %} 
+                    href="{% url 'main:sort' 'created' %}" 
+                  {% else %}
+                    href="{% url 'main:tags_sort' tab=1 tag_slug=tags tag_sort_by='created' %}"
+                  {% endif %}>Oldest</a>
+                  <a class="btn btn-default pull-right"
+                  {% if tags == None or tags.count != 0 %} 
+                    href="{% url 'main:sort' 'Score' %}" 
+                  {% else %}
+                    href="{% url 'main:tags_sort' tab=1 tag_slug=tags tag_sort_by='Score' %}"
+                  {% endif %}>Votes</a>
+                </div>
+              </div>
+          {% if tab == 0 %}
+          <div class="col-md-2 text-right">
+            <div class="next" style="padding-top: 10px; padding-right: 20px;">
+              <a type="button" class="btn btn-info btn-lg" href="{% url 'main:add_question' %}">Add Question</a>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="padding-top: 20px; padding-bottom: 20px;">
+          <div class="col-md-12">
+                {% for question in page_obj %}
+                  <div class="row" style="border-bottom: 1px solid #ccc; padding-top: 50px; padding-left: 20px; padding-right: 20px;">
+                    <div class="col-md-10">
+                      <a href="{% url 'main:details' question.QuestionId %}"><div>{{ question.Title|safe }}</div></a>
+                      <div>
+                        {{ question.Body|truncatewords:20 }}
+                      </div>
+                      <div>
+                          {% for tag in question.tags.all %}
+                          <a href="{% url 'main:tags' tab=1 tag_slug=tag %}">{{ tag }}</a>
+                          {% endfor %}
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      {{ question.Score|safe }} Votes
+                    </div>
+                  </div>
+                {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% include 'pagination.html' with page_obj=page_obj %}
+      {% endif %}
+      {% if tab == 1 %}
+        </div>
+        {% if tags != None %}
+          {% if tags|length != 0 %}
+          <ul class="list-inline">
+            {% for tag in tags %}
+                <li><a href="{% url 'main:tags' tab=1 tag_slug=tag %}">{{ tag }}</a></li>
+            {% endfor %}
+          </ul>
+          {% else %}
+            {% include 'tags.html' with tag=tags %}
+          {% endif %}
+        {% endif %}
+      {% endif %}
+      </div>
+      </div>
+    </div>
+    {% endblock %}

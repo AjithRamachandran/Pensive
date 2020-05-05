@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load countries %}
+    {% block content %}
+        <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+                    <li><a href="{% url 'main:dashboard' user.id %}" class="active"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12" style="border-left:1px solid #ccc">
+                <div class="row">
+                    <div class="col-md-9">
+                    <h3 class="media-heading">{{ user.first_name }} {{ user.last_name }}<small> {{ user.profile.Country }}</small></h3>
+                    <hr>
+                    </div>
+                    <div class="col-md-3 avatar">
+                        <img src="{% static 'image/profile.png' %}" alt="avatar">
+                    </div>
+                </div>
+                <div>
+                    <p class="text-left"><strong>Username : </strong>{{ user.username }}</p>
+                    <p class="text-left"><strong>Bio : </strong>{{ user.profile.Bio }}</p>
+                    <br>
+                </div>
+                <div style="padding-bottom: 50px;">
+                    <strong style="border-bottom: 1px solid grey;">Questions({{ questions|length }})</strong>
+                    <div>
+                        {% if questions|length != 0 %}
+                            {% for question in questions %}
+                            <div style="border-bottom: 1px solid grey;">
+                                <div style="padding-top: 10px;"><a href="{% url 'main:details' question.QuestionId %}"><h2>{{ question.Title }}</h2></a></div>
+                                <div style="padding-top: 10px;">{{ question.Body|truncatewords:20 }}</div>
+                            </div>
+                            {% endfor %}  
+                        {% else %}
+                        <div>You have not asked any questions</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div style="padding-bottom: 50px;">
+                    <strong style="border-bottom: 1px solid grey;">Answers({{ answers|length }})</strong>
+                    <div>
+                        {% if answers|length != 0 %}
+                            {% for answer in answers %}
+                            <div style="border-bottom: 1px solid grey;">
+                                <div style="padding-top: 10px;"><a href="{% url 'main:details' answer.ParentId.QuestionId %}">{{ answer.Body|truncatewords:20|safe }}</a></div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div style="padding-top: 10px;">You have not answered any questions</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

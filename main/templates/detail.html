@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+    {% block content %}
+    <div style="padding-right: 90px;">
+        <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-12">
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="{% url 'main:index' %}"><i class="fa fa-home"></i> Home</a></li>
+                    <li><a href="{% url 'main:tags_tab' 1 %}"><i class="fa fa-tags"></i> Tags</a></li>
+                </ul>
+              </div>
+            <div class="col-md-10"  style="border-left: 1px solid #ccc;">
+                <div class="row"  style="border-bottom: 1px solid #ccc; padding-bottom: 20px;">
+                    <div class="col-md-9 text-left">
+                        <div class="previous">
+                            <h2 style="padding-left: 25px;">{{ question.Title }}</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-right">   
+                        <div class="next" style="padding-top: 10px; padding-right: 20px;">
+                            <a type="button" class="btn btn-info btn-lg" href="{% url 'main:add_question' %}">Add Question</a>
+                        </div>
+                    </div>
+                </div>
+                <div style="border-bottom: 1px solid #ccc; padding-bottom: 50px;">
+                    <div style="padding-top: 50px;">{{ question.Body|safe }}</div>
+                    <div  style="padding-top: 20px;">
+                        <a href="{% url 'main:upvote' question.QuestionId %}"><span class="glyphicon glyphicon-chevron-up"> </span> Upvote {{ question.Score }} </a>
+                    </div>
+                </div>
+                <h2 style="padding-left: 10px;">Answers</h2>
+                <div>
+                    {% for answer in answers %}
+                    <div class="well" style="border-bottom: 1px solid #ccc;">
+                        <div style="padding-right: 50px;">
+                            {% for user in users %}
+                                {% if answer.OwnerUserId_id == user.id %} 
+                                <div style="font-weight: bold; padding-top: 10px">{{ user.username }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <div style="padding-top: 10px">{{ answer.Body|safe }}</div>
+                            <div><a href="{% url 'main:upscore' answer_id=answer.AnswerId question_id=question.QuestionId %}"><span class="glyphicon glyphicon-chevron-up"></span> Upvote {{ answer.Score }} </a></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div>
+                    <form action="{% url 'main:adding' question_id=question.QuestionId %}" method="POST">
+                        {% csrf_token %}
+                        <div style="padding: 10px;">
+                            Your Answer {{ form.Body|as_crispy_field }}
+                            <button class="btn btn-primary" type="submit">Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

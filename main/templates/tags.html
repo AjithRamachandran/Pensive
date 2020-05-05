@@ -1,0 +1,32 @@
+{% load static %}
+<div class="row" style="padding-top: 20px; padding-bottom: 20px;">
+    <div class="col-md-12">
+      <div style="padding: 10px;">
+        <p class="tags">
+          <span class="badge badge-pill badge-success"><a class="tag" href="{% url 'main:tags' tab=1 tag_slug=tag %}">{{ tag }}</a></span>
+        </p>
+      </div>
+
+      {% for question in page_obj %}
+        <div class="row" style="border-bottom: 1px solid #ccc; padding-top: 50px; padding-left: 20px; padding-right: 20px;">
+          <div class="col-md-10">
+            <a href="{% url 'main:details' question.QuestionId %}"><div>{{ question.Title|safe }}</div></a>
+            <div>
+              {{ question.Body|truncatewords:20 }}
+            </div>
+            <div>
+                <ul id = "limheight">
+                {% for tag in question.tags.all %}
+                <li class="list-item col-sm-6"><a href="{% url 'main:tags' tab=1 tag_slug=tag %}">{{ tag }}</a></li>
+                {% endfor %}
+                </ul> 
+            </div>
+          </div>
+          <div class="col-md-2">
+            {{ question.Score|safe }} Votes
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% include 'pagination.html' with page_obj=page_obj %}

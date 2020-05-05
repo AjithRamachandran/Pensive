@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+    {% block content %}
+
+        <div class="col text-center" style="padding: 100px;">
+            <img src="{% static 'image/error.svg' %}" height="100" width="100" />
+            <h4> We couldn't find anything for "{{ keyword }}" </h4>
+        </div>
+
+    {% endblock %}
